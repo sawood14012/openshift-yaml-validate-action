@@ -10,8 +10,8 @@ jobs:
       - name: yaml-action-setup
         id: hello
         uses: ./
-        with:
-          yaml-dir: './openshift'
+        #with:
+        #  yaml-dir: './openshift'
       # Use the output from the `hello` step
       - name: Get the output time
         run: echo "The time was ${{ steps.hello.outputs.time }}"
