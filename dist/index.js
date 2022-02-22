@@ -12406,6 +12406,7 @@ function execute_command(yaml){
 
 try {
   // `who-to-greet` input defined in action metadata file
+  setup()
   const yaml_path = core.getInput('yaml-path');
   const isDir = core.getInput('is_dir');
   console.log(`Looking for yaml files!`)
