@@ -1,21 +1,18 @@
-# Hello world javascript action
+# Openshift yaml validate javascript action
 
-This action prints "Hello World" or "Hello" + the name of a person to greet to the log.
+This action validates yaml templates.
 
 ## Inputs
 
-## `who-to-greet`
+## `yaml-path`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Required** The path to the yaml to validate. Default `"openshift/temlpate.yaml"`.
 
-## Outputs
-
-## `time`
-
-The time we greeted you.
-
+## `is_dir`
+The boolean flag when set to true validates all the yamls found in the directory provided in the path
 ## Example usage
 
 uses: actions/hello-world-javascript-action@v1.1
 with:
-  who-to-greet: 'Mona the Octocat'
+  yaml-path: './openshift'
+  is_dir: true
