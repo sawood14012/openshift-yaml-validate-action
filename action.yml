@@ -1,0 +1,22 @@
+name: 'Openshift-Yaml-Validate'
+author: 'Meer Sawood'
+description: 'Validate your Openshift template yaml'
+inputs:
+  kubernetes_mode: 
+    description: 'Switch to kubernetes'
+    required: false
+    default: 'False'
+  yaml-path:  # id of input
+    description: 'Path to your Yaml'
+    required: false
+    default: 'openshift/template.yaml'
+  yaml-dir: 
+    description: 'Dir containing yaml'
+    required: false
+    default: ''
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
