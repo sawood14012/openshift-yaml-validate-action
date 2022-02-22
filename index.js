@@ -60,7 +60,7 @@ try {
     var files_found = getyamlsfromdir(yaml_path);
     console.log(`Validating following yamls: ${files_found}`)
     files_found.forEach(function(yaml, index){
-        execute_command(yaml);
+        execute_command(yaml_path+'/'+yaml);
     })
     
   }
