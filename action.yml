@@ -6,14 +6,14 @@ inputs:
     description: 'Switch to kubernetes'
     required: false
     default: 'False'
-  yaml-path:  # id of input
+  yaml-path: 
     description: 'Path to your Yaml'
-    required: false
+    required: true
     default: 'openshift/template.yaml'
-  yaml-dir: 
-    description: 'Dir containing yaml'
+  is_dir:
+    description: 'if the path specified is a directory'
     required: false
-    default: ''
+    default: 'False'
 outputs:
   time: # id of output
     description: 'The time we greeted you'

@@ -20,11 +20,10 @@ function getyamlsfromdir(dir){
 try {
   // `who-to-greet` input defined in action metadata file
   const yaml_path = core.getInput('yaml-path');
-  const yaml_dir = core.getInput('yaml-dir');
+  const isDir = core.getInput('is_dir');
   console.log(`Looking for yaml files!`)
-  if(yaml_dir !== ''){
-    var files_found = getyamlsfromdir(yaml_dir);
-
+  if(isDir === 'true'){
+    var files_found = getyamlsfromdir(yaml_path);
     console.log(`Validating following yamls: ${files_found}`)
   }
   else{
