@@ -12368,6 +12368,7 @@ async function setup() {
   
     // Expose the tool by adding it to the PATH
     core.addPath(pathToCLI)
+    
 }
 
 function getyamlsfromdir(dir){
@@ -12389,7 +12390,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(`echo $PATH`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
