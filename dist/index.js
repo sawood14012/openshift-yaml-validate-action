@@ -8315,6 +8315,14 @@ module.exports = require("assert");
 
 /***/ }),
 
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
+
+/***/ }),
+
 /***/ 2361:
 /***/ ((module) => {
 
@@ -8471,6 +8479,7 @@ var __webpack_exports__ = {};
 const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
+const { exec } = __nccwpck_require__(2081);
 
 
 function getyamlsfromdir(dir){
@@ -8495,6 +8504,16 @@ try {
   if(isDir === 'true'){
     var files_found = getyamlsfromdir(yaml_path);
     console.log(`Validating following yamls: ${files_found}`)
+    exec('oc', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          return;
+        }
+      
+        // the *entire* stdout and stderr (buffered)
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
   }
   else{
     console.log(`Validating the yaml from ${yaml_path}`)
