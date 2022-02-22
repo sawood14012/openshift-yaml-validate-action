@@ -18,6 +18,8 @@ async function setup() {
     
 }
 
+module.exports = setup
+
 function getyamlsfromdir(dir){
     try{
     var files = fs.readdirSync(dir).filter(fn => fn.endsWith('.yaml'));
@@ -37,7 +39,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`echo $PATH`, (err, stdout, stderr) => {
+        exec(`setup-kubeval blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
