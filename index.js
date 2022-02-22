@@ -1,6 +1,7 @@
 const fs = require('fs');
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { exec } = require('child_process');
 
 
 function getyamlsfromdir(dir){
@@ -25,6 +26,16 @@ try {
   if(isDir === 'true'){
     var files_found = getyamlsfromdir(yaml_path);
     console.log(`Validating following yamls: ${files_found}`)
+    exec('oc', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          return;
+        }
+      
+        // the *entire* stdout and stderr (buffered)
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
   }
   else{
     console.log(`Validating the yaml from ${yaml_path}`)
