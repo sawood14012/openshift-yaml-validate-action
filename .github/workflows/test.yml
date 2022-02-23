@@ -11,6 +11,10 @@ jobs:
         uses: redhat-actions/oc-installer@v1
         with:
           oc_version: '4.6'
+      - name: Install kubeval cli
+        uses: sawood14012/setup-kubeval-cli@v1.1
+        with:
+          version: '0.16.1'
       - name: yaml-action-setup
         id: hello
         uses: ./

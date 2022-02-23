@@ -3,9 +3,6 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const { exec } = require('child_process');
 
-
-
-
   if (require.main === module) {
         try {
             // `who-to-greet` input defined in action metadata file
@@ -52,7 +49,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`ls -l`, (err, stdout, stderr) => {
+        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
