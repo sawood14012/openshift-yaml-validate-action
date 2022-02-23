@@ -8,23 +8,34 @@ const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
 const tc = __nccwpck_require__(4000);
+const utils = __nccwpck_require__(1520);
 const { exec } = __nccwpck_require__(2081);
 
 async function setup() {
-    // Get version of tool to be installed
+    try {
+      // Get version of tool to be installed
+      // const version = core.getInput('version');
   
-    // Download the specific version of the tool, e.g. as a tarball
-    const pathToTarball = await tc.downloadTool(`https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz`);
+      // Download the specific version of the tool, e.g. as a tarball/zipball
+      const download = utils.getDownloadObject();
+      const pathToTarball = await tc.downloadTool(download.url);
   
-    // Extract the tarball onto the runner
-    const pathToCLI = await tc.extractTar(pathToTarball);
+      // Extract the tarball/zipball onto host runner
+      const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+      const pathToCLI = await extract(pathToTarball);
   
-    // Expose the tool by adding it to the PATH
-    core.addPath(pathToCLI)
-    
-}
-
-module.exports = setup
+      // Expose the tool by adding it to the PATH
+      core.addPath(path.join(pathToCLI, download.binPath));
+    } catch (e) {
+      core.setFailed(e);
+    }
+  }
+  
+  module.exports = setup
+  
+  if (require.main === require.cache[eval('__filename')]) {
+    setup();
+  }
 
 function getyamlsfromdir(dir){
     try{
@@ -45,7 +56,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`setup-kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(`echo $PATH`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
@@ -12233,6 +12244,48 @@ function wrappy (fn, cb) {
   }
 }
 
+
+/***/ }),
+
+/***/ 1520:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const os = __nccwpck_require__(2037);
+const path = __nccwpck_require__(1017);
+
+// arch in [arm, x32, x64...] (https://nodejs.org/api/os.html#os_os_arch)
+// return value in [amd64, 386, arm]
+function mapArch(arch) {
+  const mappings = {
+    x32: '386',
+    x64: 'amd64'
+  };
+  return mappings[arch] || arch;
+}
+
+// os in [darwin, linux, win32...] (https://nodejs.org/api/os.html#os_os_platform)
+// return value in [darwin, linux, windows]
+function mapOS(os) {
+  const mappings = {
+    darwin: 'macOS',
+    win32: 'windows'
+  };
+  return mappings[os] || os;
+}
+
+function getDownloadObject() {
+  const platform = os.platform();
+  const filename =  `kubeval-${ mapOS(platform) }-${ mapArch(os.arch()) }`;
+  const extension = platform === 'win32' ? 'zip' : 'tar.gz';
+  const binPath = platform === 'win32' ? 'bin' : path.join(filename, 'bin');
+  const url = `https://github.com/instrumenta/kubeval/releases/latest/download/${ filename }.${ extension }`;
+  return {
+    url,
+    binPath
+  };
+}
+
+module.exports = { getDownloadObject }
 
 /***/ }),
 

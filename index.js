@@ -2,23 +2,34 @@ const fs = require('fs');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const tc = require('@actions/tool-cache');
+const utils = require('./utils');
 const { exec } = require('child_process');
 
 async function setup() {
-    // Get version of tool to be installed
+    try {
+      // Get version of tool to be installed
+      // const version = core.getInput('version');
   
-    // Download the specific version of the tool, e.g. as a tarball
-    const pathToTarball = await tc.downloadTool(`https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz`);
+      // Download the specific version of the tool, e.g. as a tarball/zipball
+      const download = utils.getDownloadObject();
+      const pathToTarball = await tc.downloadTool(download.url);
   
-    // Extract the tarball onto the runner
-    const pathToCLI = await tc.extractTar(pathToTarball);
+      // Extract the tarball/zipball onto host runner
+      const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+      const pathToCLI = await extract(pathToTarball);
   
-    // Expose the tool by adding it to the PATH
-    core.addPath(pathToCLI)
-    
-}
-
-module.exports = setup
+      // Expose the tool by adding it to the PATH
+      core.addPath(path.join(pathToCLI, download.binPath));
+    } catch (e) {
+      core.setFailed(e);
+    }
+  }
+  
+  module.exports = setup
+  
+  if (require.main === module) {
+    setup();
+  }
 
 function getyamlsfromdir(dir){
     try{
@@ -39,7 +50,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`setup-kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(`echo $PATH`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
