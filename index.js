@@ -30,7 +30,32 @@ async function setup() {
   module.exports = setup
   
   if (require.main === module) {
-    setup();
+    setup().then(function(){
+        try {
+            // `who-to-greet` input defined in action metadata file
+            const yaml_path = core.getInput('yaml-path');
+            const isDir = core.getInput('is_dir');
+            console.log(`Looking for yaml files!`)
+            if(isDir === 'true'){
+              var files_found = getyamlsfromdir(yaml_path);
+              console.log(`Validating following yamls: ${files_found}`)
+              files_found.forEach(function(yaml, index){
+                  execute_command(yaml_path+'/'+yaml);
+              })
+              
+            }
+            else{
+              console.log(`Validating the yaml from ${yaml_path}`)
+            }
+            const time = (new Date()).toTimeString();
+            core.setOutput("time", time);
+            // Get the JSON webhook payload for the event that triggered the workflow
+            const payload = JSON.stringify(github.context.payload, undefined, 2)
+            console.log(`The event payload: ${payload}`);
+          } catch (error) {
+            core.setFailed(error.message);
+          }
+    });
   }
 
 function getyamlsfromdir(dir){
@@ -64,30 +89,4 @@ function execute_command(yaml){
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
       });
-}
-
-
-try {
-  // `who-to-greet` input defined in action metadata file
-  const yaml_path = core.getInput('yaml-path');
-  const isDir = core.getInput('is_dir');
-  console.log(`Looking for yaml files!`)
-  if(isDir === 'true'){
-    var files_found = getyamlsfromdir(yaml_path);
-    console.log(`Validating following yamls: ${files_found}`)
-    files_found.forEach(function(yaml, index){
-        execute_command(yaml_path+'/'+yaml);
-    })
-    
-  }
-  else{
-    console.log(`Validating the yaml from ${yaml_path}`)
-  }
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
 }
