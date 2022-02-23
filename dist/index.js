@@ -8479,7 +8479,7 @@ var __webpack_exports__ = {};
 const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
-const { spawn } = __nccwpck_require__(2081);
+const { execSync } = __nccwpck_require__(2081);
 
 
   if (require.main === require.cache[eval('__filename')]) {
@@ -8492,13 +8492,18 @@ const { spawn } = __nccwpck_require__(2081);
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml);
+                  execute_command(yaml_path+'/'+yaml).then(function(result){
+                    console.log(result)
+                  });
               })
-              
+              core.setOutput('result', 'exit')
             }
             else{
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path);
+              execute_command(yaml_path).then(function(result){
+                console.log(result)
+              });
+              core.setOutput('result', 'exit')
             }
             
             // Get the JSON webhook payload for the event that triggered the workflow
@@ -8523,21 +8528,7 @@ function getyamlsfromdir(dir){
 }
 
 async function execute_command(yaml){
-  const child = spawn(`oc process --local -f ${yaml} | kubeval --openshift`);
-  child.stdout.on('data', (chunk) => {
-    // data from standard output is here as buffers
-    console.log(chunk)
-  });
-  
-  // since these are streams, you can pipe them elsewhere
-  child.stderr.on('error', (err)=> {
-    console.log(err.message)
-  })
-  
-  child.on('close', (code) => {
-    console.log(`process exited with code ${code}`);
-    core.setOutput("result", code)
-  });
+  return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
     //const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
     ////const result = {
     //  stdout: stdout,
