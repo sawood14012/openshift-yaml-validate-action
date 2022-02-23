@@ -22,17 +22,11 @@ async function setup() {
       // Expose the tool by adding it to the PATH
       //core.addPath(path.join(pathToCLI, download.binPath));
       //console.log(path.join(pathToCLI, download.binPath));
-      exec(`wget ${download.url}`, (err, stdout, stderr) => {
-          if(stderr){
-              throw stderr
-          }else{
-              const extract = download.url.endsWith('.zip') ? '7z x' : 'tar -xzf';
-              exec(`${extract} ${download.fullname}`, (err, stdout, stderr) => {
-                console.log(`stdout: ${stdout}`);
-                console.log(`stderr: ${stderr}`);
-              })
-          }
-      })
+      const extract = download.url.endsWith('.zip') ? '7z x' : 'tar -xzf';
+      exec(`wget ${download.url} && ${extract} ${download.fullname}`, (err, stdout, stderr) => {
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+        })
     } catch (e) {
       core.setFailed(e);
     }
