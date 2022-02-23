@@ -3,6 +3,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const tc = require('@actions/tool-cache');
 const utils = require('./utils');
+const path = require('path');
 const { exec } = require('child_process');
 
 async function setup() {
