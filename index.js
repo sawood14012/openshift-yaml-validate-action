@@ -45,10 +45,10 @@ function getyamlsfromdir(dir){
 
 function execute_command(yaml){
     exec(`oc process --local -f ${yaml} -o yaml > blueprint.yaml && kubeval --openshift blueprint.yaml`, (err, stdout, stderr) => {
-        if (err) {
+        //if (err) {
           // node couldn't execute the command
-          throw err;
-        }
+         // throw err;
+       // }
         // the *entire* stdout and stderr (buffered)
         console.log(`stdout: ${stdout}`);
         console.log(`stderr: ${stderr}`);
