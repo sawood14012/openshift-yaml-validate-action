@@ -16,7 +16,7 @@ const exec1 = util.promisify((__nccwpck_require__(2081).exec));
 
 
 async function down(url) {
-    const { stdout, stderr } = await exec(`wget ${url}`);
+    const { stdout, stderr } = await exec1(`wget ${url}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
     

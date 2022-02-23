@@ -10,7 +10,7 @@ const exec1 = util.promisify(require('child_process').exec);
 
 
 async function down(url) {
-    const { stdout, stderr } = await exec(`wget ${url}`);
+    const { stdout, stderr } = await exec1(`wget ${url}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
     
