@@ -49,7 +49,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`kubeval --help`, (err, stdout, stderr) => {
+        exec(`kubeval --openshift blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
