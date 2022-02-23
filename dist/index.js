@@ -27,6 +27,7 @@ async function setup() {
   
       // Expose the tool by adding it to the PATH
       core.addPath(path.join(pathToCLI, download.binPath));
+      console.log(path.join(pathToCLI, download.binPath));
     } catch (e) {
       core.setFailed(e);
     }
@@ -57,7 +58,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(``, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
