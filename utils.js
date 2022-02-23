@@ -29,7 +29,8 @@ function getDownloadObject() {
   const url = `https://github.com/instrumenta/kubeval/releases/latest/download/${ filename }.${ extension }`;
   return {
     url,
-    binPath
+    binPath,
+    filename
   };
 }
 
