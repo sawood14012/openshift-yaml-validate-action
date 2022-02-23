@@ -15,8 +15,8 @@ inputs:
     required: false
     default: 'False'
 outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  result: # id of output
+    description: 'Result of the action'
 runs:
   using: 'node16'
   main: 'dist/index.js'

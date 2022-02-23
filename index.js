@@ -6,6 +6,7 @@ const { exec } = require('child_process');
   if (require.main === module) {
         try {
             // `who-to-greet` input defined in action metadata file
+            const result = {}
             const yaml_path = core.getInput('yaml-path');
             const isDir = core.getInput('is_dir');
             console.log(`Looking for yaml files!`)
@@ -13,15 +14,19 @@ const { exec } = require('child_process');
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml);
+                  execute_command(yaml_path+'/'+yaml).then(function(res){
+                    result = res
+                  });
               })
               
             }
             else{
               console.log(`Validating the yaml from ${yaml_path}`)
+              execute_command(yaml_path).then(function(res){
+                result = res
+              });
             }
-            const time = (new Date()).toTimeString();
-            core.setOutput("time", time);
+            core.setOutput("result", result);
             // Get the JSON webhook payload for the event that triggered the workflow
             //const payload = JSON.stringify(github.context.payload, undefined, 2)
             //console.log(`The event payload: ${payload}`);
@@ -45,12 +50,10 @@ function getyamlsfromdir(dir){
 
 function execute_command(yaml){
     exec(`oc process --local -f ${yaml} | kubeval --openshift`, (err, stdout, stderr) => {
-        //if (err) {
-          // node couldn't execute the command
-         // throw err;
-       // }
-        // the *entire* stdout and stderr (buffered)
-        console.log(`stdout: ${stdout}`);
-        console.log(`stderr: ${stderr}`);
+        return {
+          err: err,
+          stdout: stdout,
+          stderr: stderr
+        }
       });
 }
