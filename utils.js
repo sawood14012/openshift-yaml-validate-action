@@ -27,10 +27,11 @@ function getDownloadObject() {
   const extension = platform === 'win32' ? 'zip' : 'tar.gz';
   const binPath = platform === 'win32' ? 'bin' : path.join(filename, 'bin');
   const url = `https://github.com/instrumenta/kubeval/releases/latest/download/${ filename }.${ extension }`;
+  const fullname = `${ filename }.${ extension }`
   return {
     url,
     binPath,
-    filename
+    fullname
   };
 }
 

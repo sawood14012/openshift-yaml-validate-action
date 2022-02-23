@@ -19,17 +19,19 @@ async function setup() {
   
       // Download the specific version of the tool, e.g. as a tarball/zipball
       const download = utils.getDownloadObject();
-      const pathToTarball = await tc.downloadTool(download.url);
-      console.log("PATH to tar:" +pathToTarball);
-      console.log("BIN: "+download.binPath);
+      tc.downloadTool(download.url).then(function(pathToTarball){
+        console.log("PATH to tar:" +pathToTarball);
+        console.log("BIN: "+download.binPath);
   
       // Extract the tarball/zipball onto host runner
-      const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
-      const pathToCLI = await extract(path.join(pathToTarball, download.filename));
-  
-      // Expose the tool by adding it to the PATH
-      core.addPath(path.join(pathToCLI, download.binPath));
-      console.log(path.join(pathToCLI, download.binPath));
+        const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+        // const pathToCLI = await extract(path.join(pathToTarball, download.fullname));
+        extract(path.join(pathToTarball, download.fullname)).then(function(pathToCLI){
+            core.addPath(path.join(pathToCLI, download.binPath));
+            console.log(path.join(pathToCLI, download.binPath));
+        })
+      // Expose the tool by adding it to the PATH 
+      })
     } catch (e) {
       core.setFailed(e);
     }
@@ -12283,10 +12285,11 @@ function getDownloadObject() {
   const extension = platform === 'win32' ? 'zip' : 'tar.gz';
   const binPath = platform === 'win32' ? 'bin' : path.join(filename, 'bin');
   const url = `https://github.com/instrumenta/kubeval/releases/latest/download/${ filename }.${ extension }`;
+  const fullname = `${ filename }.${ extension }`
   return {
     url,
     binPath,
-    filename
+    fullname
   };
 }
 
