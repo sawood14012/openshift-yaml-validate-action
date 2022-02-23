@@ -110,7 +110,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`ls -l && ./kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(`ls -l`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
