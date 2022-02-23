@@ -15,15 +15,11 @@ const util = __nccwpck_require__(3837);
 const exec1 = util.promisify((__nccwpck_require__(2081).exec));
 
 
-async function down() {
-    const download = utils.getDownloadObject();
-    const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
-    const { stdout, stderr } = await exec(`wget ${download.url}`);
+async function down(url) {
+    const { stdout, stderr } = await exec(`wget ${url}`);
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
-    await extract(path.join(download.fullname)).then(function(pathToCLI){
-        console.log(pathToCLI);
-    });
+    
   }
 async function setup() {
     try {
@@ -51,7 +47,13 @@ async function setup() {
                 console.log(pathToCLI);
             });
         }) */
-        await down();
+        const download = utils.getDownloadObject();
+        const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+        down(download.url).then(function(){
+            extract(path.join(download.fullname)).then(function(pathToCLI){
+                console.log(pathToCLI);
+            });
+        })
         
     } catch (e) {
       core.setFailed(e);
