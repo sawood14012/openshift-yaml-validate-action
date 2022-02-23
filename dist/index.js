@@ -19,18 +19,25 @@ async function setup() {
   
       // Download the specific version of the tool, e.g. as a tarball/zipball
       const download = utils.getDownloadObject();
-      tc.downloadTool(download.url).then(function(pathToTarball){
-        console.log("PATH to tar:" +pathToTarball);
-        console.log("BIN: "+download.binPath);
+      //const pathToTarball = await tc.downloadTool(download.url);
   
       // Extract the tarball/zipball onto host runner
-        const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
-        // const pathToCLI = await extract(path.join(pathToTarball, download.fullname));
-        extract(path.join(pathToTarball, download.fullname)).then(function(pathToCLI){
-            core.addPath(path.join(pathToCLI, download.binPath));
-            console.log(path.join(pathToCLI, download.binPath));
-        })
-      // Expose the tool by adding it to the PATH 
+      //const extract = download.url.endsWith('.zip') ? tc.extractZip : tc.extractTar;
+      //const pathToCLI = await extract(pathToTarball);
+  
+      // Expose the tool by adding it to the PATH
+      //core.addPath(path.join(pathToCLI, download.binPath));
+      //console.log(path.join(pathToCLI, download.binPath));
+      exec(`wget ${download.url}`, (err, stdout, stderr) => {
+          if(stderr){
+              throw stderr
+          }else{
+              const extract = download.url.endsWith('.zip') ? '7z x' : 'tar -xzf';
+              exec(`${extract} ${download.fullname}`, (err, stdout, stderr) => {
+                console.log(`stdout: ${stdout}`);
+                console.log(`stderr: ${stderr}`);
+              })
+          }
       })
     } catch (e) {
       core.setFailed(e);
@@ -87,7 +94,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`ls -l`, (err, stdout, stderr) => {
+        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
