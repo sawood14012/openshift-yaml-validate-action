@@ -8527,13 +8527,15 @@ function getyamlsfromdir(dir){
 }
 
 function execute_command(yaml){
+    let result = {}
     exec(`oc process --local -f ${yaml} | kubeval --openshift`, (err, stdout, stderr) => {
-        return {
+        result = {
           err: err,
           stdout: stdout,
           stderr: stderr
         }
       });
+      return result;
 }
 
 })();
