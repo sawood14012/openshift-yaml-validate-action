@@ -27,6 +27,7 @@ async function setup() {
       exec(`wget ${download.url}`, (err, stdout, stderr) => {
             console.log(`stdout: ${stdout}`);
             console.log(`stderr: ${stderr}`);
+        }).then(()=>{
             extract(path.join(download.fullname)).then(function(pathToCLI){
                 console.log(pathToCLI);
             });
