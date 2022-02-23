@@ -23,8 +23,8 @@ const { exec } = require('child_process');
             const time = (new Date()).toTimeString();
             core.setOutput("time", time);
             // Get the JSON webhook payload for the event that triggered the workflow
-            const payload = JSON.stringify(github.context.payload, undefined, 2)
-            console.log(`The event payload: ${payload}`);
+            //const payload = JSON.stringify(github.context.payload, undefined, 2)
+            //console.log(`The event payload: ${payload}`);
           } catch (error) {
             core.setFailed(error.message);
           }
@@ -49,7 +49,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
+        exec(`kubeval --help`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
