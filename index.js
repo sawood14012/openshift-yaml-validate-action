@@ -77,7 +77,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`echo $PATH`, (err, stdout, stderr) => {
+        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
