@@ -58,7 +58,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(``, (err, stdout, stderr) => {
+        exec(`echo $PATH`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
