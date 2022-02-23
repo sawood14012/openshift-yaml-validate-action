@@ -8479,7 +8479,8 @@ var __webpack_exports__ = {};
 const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
-const { exec } = __nccwpck_require__(2081);
+const util = __nccwpck_require__(3837);
+const exec = util.promisify((__nccwpck_require__(2081).exec));
 
   if (require.main === require.cache[eval('__filename')]) {
         try {
@@ -8491,13 +8492,17 @@ const { exec } = __nccwpck_require__(2081);
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml);
+                  execute_command(yaml_path+'/'+yaml).then(function(result){
+                    core.setOutput("result", result);
+                  });
               })
               
             }
             else{
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path);
+              execute_command(yaml_path).then(function(result){
+                core.setOutput("result", result);
+              });
             }
             
             // Get the JSON webhook payload for the event that triggered the workflow
@@ -8521,15 +8526,13 @@ function getyamlsfromdir(dir){
     }
 }
 
-function execute_command(yaml){
-    exec(`oc process --local -f ${yaml} | kubeval --openshift`, (err, stdout, stderr) => {
-        const result = {
-          err: err,
-          stdout: stdout,
-          stderr: stderr
-        }
-        core.setOutput("result", result);
-      });
+async function execute_command(yaml){
+    const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
+    const result = {
+      stdout: stdout,
+      stderr: stderr
+    }
+    return result; 
 }
 
 })();

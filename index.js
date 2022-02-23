@@ -1,7 +1,8 @@
 const fs = require('fs');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { exec } = require('child_process');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
   if (require.main === module) {
         try {
@@ -13,13 +14,17 @@ const { exec } = require('child_process');
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml);
+                  execute_command(yaml_path+'/'+yaml).then(function(result){
+                    core.setOutput("result", result);
+                  });
               })
               
             }
             else{
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path);
+              execute_command(yaml_path).then(function(result){
+                core.setOutput("result", result);
+              });
             }
             
             // Get the JSON webhook payload for the event that triggered the workflow
@@ -43,13 +48,11 @@ function getyamlsfromdir(dir){
     }
 }
 
-function execute_command(yaml){
-    exec(`oc process --local -f ${yaml} | kubeval --openshift`, (err, stdout, stderr) => {
-        const result = {
-          err: err,
-          stdout: stdout,
-          stderr: stderr
-        }
-        core.setOutput("result", result);
-      });
+async function execute_command(yaml){
+    const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
+    const result = {
+      stdout: stdout,
+      stderr: stderr
+    }
+    return result; 
 }
