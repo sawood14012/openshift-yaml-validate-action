@@ -8481,9 +8481,6 @@ const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
 const { exec } = __nccwpck_require__(2081);
 
-
-
-
   if (require.main === require.cache[eval('__filename')]) {
         try {
             // `who-to-greet` input defined in action metadata file
@@ -8530,7 +8527,7 @@ function execute_command(yaml){
           // node couldn't execute the command
           throw err;
         }
-        exec(`ls -l`, (err, stdout, stderr) => {
+        exec(`kubeval blueprint.yaml`, (err, stdout, stderr) => {
             if (err) {
                 // node couldn't execute the command
                 throw err;
