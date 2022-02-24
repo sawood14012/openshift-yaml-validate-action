@@ -11,7 +11,7 @@ inputs:
     required: true
     default: 'openshift/template.yaml'
   non_template:
-    description: 'is the following path contain non-templates (DOES NOT WORK ON DIRECTORIES)'
+    description: 'is the following path contain non-templates (DOES NOT WORK ON DIRECTORIES || Works if all the yamls present are non-templates)'
     required: false
     default: 'false'
 runs:

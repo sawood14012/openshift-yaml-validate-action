@@ -15730,6 +15730,10 @@ async function execute_command(yaml, kubernetes_mode, non_template){
       cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
     }
     const {code, stdout, stderr } = shell.exec(cmd)
+    if(stdout.includes('Error'|| 0|| 0|| 0)){
+      core.setFailed(stderr);
+      shell.exit(1);
+    }
     console.log(`process exited with exit code ${code}`)
     return {code, stdout, stderr }
 }
