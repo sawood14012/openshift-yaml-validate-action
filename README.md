@@ -24,8 +24,8 @@ Requires `redhat-actions/oc-installer` and `sawood14012/openshift-yaml-validate-
   uses: sawood14012/setup-kubeval-cli@v1.1
   with:
     version: '0.16.1'
-uses: sawood14012/openshift-yaml-validate-action@v1
-with:
-  yaml-path: './openshift'
+  uses: sawood14012/openshift-yaml-validate-action@v1
+  with:
+    yaml-path: './openshift'
 
 ```
