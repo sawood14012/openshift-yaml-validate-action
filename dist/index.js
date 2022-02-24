@@ -8307,6 +8307,14 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
+/***/ 6420:
+/***/ ((module) => {
+
+module.exports = eval("require")("shelljs");
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -8480,6 +8488,7 @@ const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
 const { execSync } = __nccwpck_require__(2081);
+var shell = __nccwpck_require__(6420);
 
 
   if (require.main === require.cache[eval('__filename')]) {
@@ -8528,13 +8537,14 @@ function getyamlsfromdir(dir){
 }
 
 async function execute_command(yaml){
-  return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
+  //return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
     //const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
     ////const result = {
     //  stdout: stdout,
     //  stderr: stderr
    // }
    // return result; 
+    const {code, stdout, stderr } = shell.exec(`oc process --local -f ${yaml} | kubeval --openshift`)
 }
 
 })();

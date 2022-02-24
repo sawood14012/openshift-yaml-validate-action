@@ -2,6 +2,7 @@ const fs = require('fs');
 const core = require('@actions/core');
 const github = require('@actions/github');
 const { execSync } = require('child_process');
+var shell = require('shelljs');
 
 
   if (require.main === module) {
@@ -50,11 +51,12 @@ function getyamlsfromdir(dir){
 }
 
 async function execute_command(yaml){
-  return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
+  //return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
     //const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
     ////const result = {
     //  stdout: stdout,
     //  stderr: stderr
    // }
    // return result; 
+    const {code, stdout, stderr } = shell.exec(`oc process --local -f ${yaml} | kubeval --openshift`)
 }
