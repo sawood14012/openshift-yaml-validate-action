@@ -7,25 +7,19 @@ var shell = require('shelljs');
   if (require.main === module) {
         try {
             // `who-to-greet` input defined in action metadata file
-            const yaml_path = core.getInput('yaml-path');
-            const isDir = core.getInput('is_dir');
+            const yaml_path = core.getInput('files');
+            const kubernetes_mode = core.getInput('kubernetes_mode');
             console.log(`Looking for yaml files!`)
-            if(isDir === 'true'){
+            if(yaml_path.endsWith('.yaml')){
+              console.log(`Validating the yaml from ${yaml_path}`)
+              execute_command(yaml_path, kubernetes_mode);
+            }
+            else{
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml).then(function(result){
-                    console.log(result)
-                  });
+                  execute_command(yaml_path+'/'+yaml, kubernetes_mode);
               })
-              core.setOutput('result', 'exit')
-            }
-            else{
-              console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path).then(function(result){
-                console.log(result)
-              });
-              core.setOutput('result', 'exit')
             }
             
             // Get the JSON webhook payload for the event that triggered the workflow
@@ -49,13 +43,11 @@ function getyamlsfromdir(dir){
     }
 }
 
-async function execute_command(yaml){
-  //return execSync(`oc process --local -f ${yaml} | kubeval --openshift`);
-    //const { stdout, stderr } = await exec(`oc process --local -f ${yaml} | kubeval --openshift`);
-    ////const result = {
-    //  stdout: stdout,
-    //  stderr: stderr
-   // }
-   // return result; 
-    const {code, stdout, stderr } = shell.exec(`oc process --local -f ${yaml} | kubeval --openshift`)
+async function execute_command(yaml, kubernetes_mode){
+    let cmd = `oc process --local -f ${yaml} | kubeval --openshift`
+    if(kubernetes_mode === 'true'){
+      cmd = `oc process --local -f ${yaml} | kubeval`
+    }
+    const {code, stdout, stderr } = shell.exec(cmd)
+    return {code, stdout, stderr }
 }

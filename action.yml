@@ -6,17 +6,10 @@ inputs:
     description: 'Switch to kubernetes'
     required: false
     default: 'False'
-  yaml-path: 
+  files: 
     description: 'Path to your Yaml'
     required: true
     default: 'openshift/template.yaml'
-  is_dir:
-    description: 'if the path specified is a directory'
-    required: false
-    default: 'False'
-outputs:
-  result: # id of output
-    description: 'Result of the action'
 runs:
   using: 'node16'
   main: 'dist/index.js'
