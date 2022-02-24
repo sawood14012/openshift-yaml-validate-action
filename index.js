@@ -44,10 +44,11 @@ function getyamlsfromdir(dir){
 }
 
 async function execute_command(yaml, kubernetes_mode){
-    let cmd = `oc process --local -f ${yaml} | kubeval --openshift`
+    let cmd = `oc process --local -f ${yaml} | kubeval --openshift --ignore-missing-schemas`
     if(kubernetes_mode === 'true'){
-      cmd = `oc process --local -f ${yaml} | kubeval`
+      cmd = `oc process --local -f ${yaml} | kubeval --ignore-missing-schemas`
     }
     const {code, stdout, stderr } = shell.exec(cmd)
+    console.log(`process exited with exit code ${code}`)
     return {code, stdout, stderr }
 }
