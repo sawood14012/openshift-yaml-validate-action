@@ -55,7 +55,9 @@ async function execute_command(yaml, kubernetes_mode, non_template){
     else if(non_template === 'true' && kubernetes_mode === 'false'){
       cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
     }
-    const {code, stdout, stderr } = shell.exec(cmd)
+    const {code, stdout, stderr } = await shell.exec(cmd)
+    console.log("out: " +stdout);
+    console.log("err: " +stderr);
     if(stdout.includes('Error'|| 'ERR'|| 'error'|| 'err')|| stderr.includes('Error'|| 'ERR'|| 'error'|| 'err')){
       core.setFailed(stderr);
       shell.exit(1);
