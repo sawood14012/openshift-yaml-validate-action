@@ -15,9 +15,14 @@ jobs:
         uses: sawood14012/setup-kubeval-cli@v1.1
         with:
           version: '0.16.1'
-      - name: yaml-action-setup
-        id: hello
+      - name: yaml-action-setup-test-1
         uses: ./
         with:
           files: './openshift'
+      - name: yaml-action-setup-test-2
+        uses: ./
+        with:
+          files: './init.yaml'
+          non_template: 'true'
+      
      

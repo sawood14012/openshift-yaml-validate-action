@@ -5,11 +5,15 @@ inputs:
   kubernetes_mode: 
     description: 'Switch to kubernetes'
     required: false
-    default: 'False'
+    default: 'false'
   files: 
     description: 'Path to your Yaml'
     required: true
     default: 'openshift/template.yaml'
+  non_template:
+    description: 'is the following path contain non-templates (DOES NOT WORK ON DIRECTORIES)'
+    required: false
+    default: 'false'
 runs:
   using: 'node16'
   main: 'dist/index.js'
