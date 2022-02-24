@@ -15732,11 +15732,14 @@ async function execute_command(yaml, kubernetes_mode, non_template){
     let {code, stdout, stderr } = await shell.exec(cmd)
     console.log("out: " +stdout);
     console.log("err: " +stderr);
-    if(stderr.includes('error:')){
+    if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
       shell.echo(stderr);
       code = 1;
       shell.exit(code);
-      
+    } else if(stdout.includes('error') ||stdout.includes('ERR') || stdout.includes('ERROR') || stdout.includes('Error')){
+      shell.echo(stderr);
+      code = 1;
+      shell.exit(code);
     }
     console.log(`process exited with exit code ${code}`)
     return {code, stdout, stderr }
