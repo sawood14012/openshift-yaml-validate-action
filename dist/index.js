@@ -15720,9 +15720,7 @@ function getyamlsfromdir(dir){
 
 async function execute_process(yaml){
   let template_fig = `oc process --local -f ${yaml}`
-  let {code, stdout, stderr } = await shell.exec(template_fig)
-  console.log("out: " +stdout);
-  console.log("err: " +stderr);
+  let {code, stdout, stderr } = await shell.exec(template_fig, {silent: true})
   if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
     return false;
   } else if(stdout.includes('error') ||stdout.includes('ERR') || stdout.includes('ERROR') || stdout.includes('Error')){
