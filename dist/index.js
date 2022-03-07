@@ -15738,10 +15738,10 @@ async function execute_command(yaml, kubernetes_mode, schemaurl){
     let is_template = await execute_process(yaml);
     if(is_template){
       if(kubernetes_mode === 'true'){
-        cmd = `oc process --local -f ${yaml} | kubeval --ignore-missing-schemas`
+        cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
       }
       else{
-        cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
+        cmd = `oc process --local -f ${yaml} | kubeval --ignore-missing-schemas`
       }
     }
     else{
