@@ -23,17 +23,14 @@ jobs:
         uses: ./
         with:
           files: './init.yaml'
-          non_template: 'true'
       - name: yaml-action-setup-test-3
         uses: ./
         with:
           files: './pvc.yaml'
           kubernetes_mode: 'true'
-          non_template: 'false'
       - name: yaml-action-setup-test-4
         uses: ./
         with:
           files: './non_temp'
-          non_template: 'true'
       
      

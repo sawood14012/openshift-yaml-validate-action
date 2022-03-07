@@ -15746,8 +15746,6 @@ async function execute_command(yaml, kubernetes_mode){
       cmd = `kubeval ${yaml} --ignore-missing-schemas`
     }
     let {code, stdout, stderr } = await shell.exec(cmd)
-    console.log("out: " +stdout);
-    console.log("err: " +stderr);
     if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
       shell.echo(stderr);
       code = 1;
@@ -15756,6 +15754,9 @@ async function execute_command(yaml, kubernetes_mode){
       shell.echo(stderr);
       code = 1;
       shell.exit(code);
+    }
+    else{
+      code = 0;
     }
     console.log(`process exited with exit code ${code}`)
     return {code, stdout, stderr }
