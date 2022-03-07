@@ -9,17 +9,17 @@ var shell = require('shelljs');
             // `who-to-greet` input defined in action metadata file
             const yaml_path = core.getInput('files');
             const kubernetes_mode = core.getInput('kubernetes_mode');
-            const non_template = core.getInput('non_template')
+            // const non_template = core.getInput('non_template');
             console.log(`Looking for yaml files!`)
             if(yaml_path.endsWith('.yaml')){
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path, kubernetes_mode, non_template);
+              execute_command(yaml_path, kubernetes_mode);
             }
             else{
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml, kubernetes_mode, non_template);
+                  execute_command(yaml_path+'/'+yaml, kubernetes_mode);
               })
             }
             
@@ -44,16 +44,34 @@ function getyamlsfromdir(dir){
     }
 }
 
-async function execute_command(yaml, kubernetes_mode, non_template){
+async function execute_process(yaml){
+  let template_fig = `oc process --local -f ${yaml}`
+  let {code, stdout, stderr } = await shell.exec(template_fig)
+  console.log("out: " +stdout);
+  console.log("err: " +stderr);
+  if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
+    return false;
+  } else if(stdout.includes('error') ||stdout.includes('ERR') || stdout.includes('ERROR') || stdout.includes('Error')){
+    return false;
+  }
+  return true;
+  
+}
+
+
+async function execute_command(yaml, kubernetes_mode){
     let cmd = `oc process --local -f ${yaml} | kubeval --openshift --ignore-missing-schemas`
-    if(non_template === 'true' && kubernetes_mode === 'true'){
+    let is_template = await execute_process(yaml);
+    if(is_template){
+      if(kubernetes_mode === 'true'){
+        cmd = `oc process --local -f ${yaml} | kubeval --ignore-missing-schemas`
+      }
+      else{
+        cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
+      }
+    }
+    else{
       cmd = `kubeval ${yaml} --ignore-missing-schemas`
-    }
-    else if(kubernetes_mode === 'true' && non_template === 'false'){
-      cmd = `oc process --local -f ${yaml} | kubeval --ignore-missing-schemas`
-    }
-    else if(non_template === 'true' && kubernetes_mode === 'false'){
-      cmd = `kubeval ${yaml}  --openshift --ignore-missing-schemas`
     }
     let {code, stdout, stderr } = await shell.exec(cmd)
     console.log("out: " +stdout);
