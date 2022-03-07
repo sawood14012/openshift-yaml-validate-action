@@ -15747,9 +15747,9 @@ async function execute_command(yaml, kubernetes_mode, schemaurl){
     else{
       cmd = `kubeval ${yaml} --ignore-missing-schemas`
     }
-    if(schemaurl != ''){
+    if(schemaurl !== ''){
       let arg = ` --schema-location ${schemaurl}`
-      cmd.concat(arg)
+      cmd = cmd + arg;
     }
     let {code, stdout, stderr } = await shell.exec(cmd)
     if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
