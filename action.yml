@@ -10,10 +10,11 @@ inputs:
     description: 'Path to your Yaml'
     required: true
     default: 'openshift/template.yaml'
-  non_template:
-    description: 'Does the following path contain non-templates (DOES NOT WORK ON DIRECTORIES || Works if all the yamls present are non-templates)'
+  schema_url:
+    description: 'Provide a custom schema URL to validate your CRDs'
     required: false
-    default: 'false'
+    default: ''
+  
 runs:
   using: 'node16'
   main: 'dist/index.js'

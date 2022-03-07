@@ -23,6 +23,7 @@ jobs:
         uses: ./
         with:
           files: './init.yaml'
+          schema_url: 'https://json.schemastore.org/kustomization.json'
       - name: yaml-action-setup-test-3
         uses: ./
         with:

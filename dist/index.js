@@ -15683,17 +15683,18 @@ var shell = __nccwpck_require__(9995);
             // `who-to-greet` input defined in action metadata file
             const yaml_path = core.getInput('files');
             const kubernetes_mode = core.getInput('kubernetes_mode');
+            const schemaurl = core.getInput('schema_url');
             // const non_template = core.getInput('non_template');
             console.log(`Looking for yaml files!`)
             if(yaml_path.endsWith('.yaml')){
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path, kubernetes_mode);
+              execute_command(yaml_path, kubernetes_mode, schemaurl);
             }
             else{
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml, kubernetes_mode);
+                  execute_command(yaml_path+'/'+yaml, kubernetes_mode, schemaurl);
               })
             }
             
@@ -15731,7 +15732,8 @@ async function execute_process(yaml){
 }
 
 
-async function execute_command(yaml, kubernetes_mode){
+async function execute_command(yaml, kubernetes_mode, schemaurl){
+   
     let cmd = `oc process --local -f ${yaml} | kubeval --openshift --ignore-missing-schemas`
     let is_template = await execute_process(yaml);
     if(is_template){
@@ -15744,6 +15746,10 @@ async function execute_command(yaml, kubernetes_mode){
     }
     else{
       cmd = `kubeval ${yaml} --ignore-missing-schemas`
+    }
+    if(schemaurl != ''){
+      let arg = ` --schema-location ${schemaurl}`
+      cmd.concat(arg)
     }
     let {code, stdout, stderr } = await shell.exec(cmd)
     if(stderr.includes('error') || stderr.includes('ERR') || stderr.includes('ERROR') || stderr.includes('Error')){
