@@ -32,6 +32,6 @@ jobs:
         uses: ./
         with:
           files: './non_temp'
-          schema_url: 'https://json.schemastore.org/kustomization.json'
+          schema_url: 'https://data-msawood.s3.us-east-2.amazonaws.com'
       
      
