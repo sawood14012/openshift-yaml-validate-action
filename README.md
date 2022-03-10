@@ -16,6 +16,8 @@ Provide a custom schema URL to validate your CRDs
 
 ## `GITHUB_TOKEN`
 Github token is required to make a pull request comment
+
+## `PULL Requests are turned off ATM`
 ## Example usage
 Requires `redhat-actions/oc-installer` and `sawood14012/openshift-yaml-validate-action` for a successful run
 ```

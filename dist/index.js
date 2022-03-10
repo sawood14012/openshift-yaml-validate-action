@@ -15770,7 +15770,7 @@ async function execute_command(yaml, kubernetes_mode, schemaurl, context, github
       code = 0;
     }
     console.log(`process exited with exit code ${code}`)
-    await pull_reqComment(context, stdout, github_token);
+    // await pull_reqComment(context, stdout, github_token);
     return {code, stdout, stderr }
 }
 
