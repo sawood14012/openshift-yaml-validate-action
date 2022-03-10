@@ -14,6 +14,10 @@ inputs:
     description: 'Provide a custom schema URL to validate your CRDs'
     required: false
     default: ''
+  GITHUB_TOKEN:
+    description: 'Required a Github token when used with pull requests to comment'
+    required: false
+    default: ''
   
 runs:
   using: 'node16'

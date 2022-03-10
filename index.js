@@ -10,17 +10,20 @@ var shell = require('shelljs');
             const yaml_path = core.getInput('files');
             const kubernetes_mode = core.getInput('kubernetes_mode');
             const schemaurl = core.getInput('schema_url');
+            const github_token = core.getInput('GITHUB_TOKEN');
+            const context = github.context;
             // const non_template = core.getInput('non_template');
+            
             console.log(`Looking for yaml files!`)
             if(yaml_path.endsWith('.yaml')){
               console.log(`Validating the yaml from ${yaml_path}`)
-              execute_command(yaml_path, kubernetes_mode, schemaurl);
+              execute_command(yaml_path, kubernetes_mode, schemaurl, context, github_token);
             }
             else{
               var files_found = getyamlsfromdir(yaml_path);
               console.log(`Validating following yamls: ${files_found}`)
               files_found.forEach(function(yaml, index){
-                  execute_command(yaml_path+'/'+yaml, kubernetes_mode, schemaurl);
+                  execute_command(yaml_path+'/'+yaml, kubernetes_mode, schemaurl, context, github_token);
               })
             }
             
@@ -58,7 +61,7 @@ async function execute_process(yaml){
 }
 
 
-async function execute_command(yaml, kubernetes_mode, schemaurl){
+async function execute_command(yaml, kubernetes_mode, schemaurl, context, github_token){
    
     let cmd = `oc process --local -f ${yaml} | kubeval --openshift --ignore-missing-schemas`
     let is_template = await execute_process(yaml);
@@ -91,5 +94,24 @@ async function execute_command(yaml, kubernetes_mode, schemaurl){
       code = 0;
     }
     console.log(`process exited with exit code ${code}`)
+    await pull_reqComment(context, stdout, github_token);
     return {code, stdout, stderr }
+}
+
+async function pull_reqComment(context, data, github_token){
+    if (context.payload.pull_request == null) {
+        return;
+    }
+    else{
+      if(github_token === ''){
+        core.setFailed('Cannot Comment on Pull Request without a github token please Provide one!');
+      }
+      const pull_request_number = context.payload.pull_request.number;
+      const octokit = new github.GitHub(github_token);
+      octokit.issues.createComment({
+          ...context.repo,
+          issue_number: pull_request_number,
+          body: data
+        });
+    }
 }

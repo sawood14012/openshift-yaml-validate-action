@@ -12,7 +12,10 @@ This action validates yaml templates.
 The boolean flag when set to true validates only for kubernetes schemas
 
 ## `schema_url`
-schema url if you want to add custom schemas
+Provide a custom schema URL to validate your CRDs
+
+## `GITHUB_TOKEN`
+Github token is required to make a pull request comment
 ## Example usage
 Requires `redhat-actions/oc-installer` and `sawood14012/openshift-yaml-validate-action` for a successful run
 ```
@@ -27,5 +30,6 @@ Requires `redhat-actions/oc-installer` and `sawood14012/openshift-yaml-validate-
   uses: sawood14012/openshift-yaml-validate-action@v1
   with:
     yaml-path: './openshift'
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 ```
