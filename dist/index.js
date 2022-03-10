@@ -15676,6 +15676,7 @@ const fs = __nccwpck_require__(7147);
 const core = __nccwpck_require__(9221);
 const github = __nccwpck_require__(3737);
 var shell = __nccwpck_require__(9995);
+const { GitHub } = __nccwpck_require__(6665);
 
 
   if (require.main === require.cache[eval('__filename')]) {
@@ -15704,6 +15705,7 @@ var shell = __nccwpck_require__(9995);
             // Get the JSON webhook payload for the event that triggered the workflow
             //const payload = JSON.stringify(github.context.payload, undefined, 2)
             //console.log(`The event payload: ${payload}`);
+            
           } catch (error) {
             core.setFailed(error.message);
           }
@@ -15781,8 +15783,8 @@ async function pull_reqComment(context, data, github_token){
         core.setFailed('Cannot Comment on Pull Request without a github token please Provide one!');
       }
       const pull_request_number = context.payload.pull_request.number;
-      const octokit = new github.GitHub(github_token);
-      octokit.issues.createComment({
+      const octokit = github.getOctokit(github_token);
+      octokit.rest.issues.createComment({
           ...context.repo,
           issue_number: pull_request_number,
           body: data

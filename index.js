@@ -2,6 +2,7 @@ const fs = require('fs');
 const core = require('@actions/core');
 const github = require('@actions/github');
 var shell = require('shelljs');
+const { GitHub } = require('@actions/github/lib/utils');
 
 
   if (require.main === module) {
@@ -30,6 +31,7 @@ var shell = require('shelljs');
             // Get the JSON webhook payload for the event that triggered the workflow
             //const payload = JSON.stringify(github.context.payload, undefined, 2)
             //console.log(`The event payload: ${payload}`);
+            
           } catch (error) {
             core.setFailed(error.message);
           }
@@ -107,8 +109,8 @@ async function pull_reqComment(context, data, github_token){
         core.setFailed('Cannot Comment on Pull Request without a github token please Provide one!');
       }
       const pull_request_number = context.payload.pull_request.number;
-      const octokit = new github.GitHub(github_token);
-      octokit.issues.createComment({
+      const octokit = github.getOctokit(github_token);
+      octokit.rest.issues.createComment({
           ...context.repo,
           issue_number: pull_request_number,
           body: data
