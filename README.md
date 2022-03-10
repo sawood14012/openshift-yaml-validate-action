@@ -1,5 +1,6 @@
 # Openshift yaml validate javascript action
 
+
 This action validates yaml templates.
 
 ## Inputs
